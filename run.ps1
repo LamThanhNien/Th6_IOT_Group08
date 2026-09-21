@@ -33,6 +33,7 @@ $spawnedPids = [System.Collections.Generic.List[int]]::new()
 try {
     # 1. Khoi dong Docker
     Write-Host "[1/4] Dang khoi dong Docker (PostgreSQL & Mosquitto)..." -ForegroundColor Green
+    try { docker stop iot_postgres iot_emqx 2>$null | Out-Null } catch {}
     Push-Location $infraDir
     docker compose up -d
     Pop-Location
