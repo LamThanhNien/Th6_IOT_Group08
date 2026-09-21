@@ -13,15 +13,25 @@ export default function DashboardPage() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const tRes = await api.get('/telemetry/latest');
-        setTelemetry(tRes.data);
-        const vRes = await api.get('/vision/latest');
-        setVision(vRes.data);
-        const histRes = await api.get('/telemetry/history?limit=10');
-        // Reverse for chart (oldest first to newest right)
-        setHistory(histRes.data.reverse());
-        const alertsRes = await api.get('/alerts/?limit=5');
-        setAlerts(alertsRes.data.slice(0, 5));
+        const [tRes, vRes, histRes, alertsRes] = await Promise.allSettled([
+          api.get('/telemetry/latest'),
+          api.get('/vision/latest'),
+          api.get('/telemetry/history?limit=10'),
+          api.get('/alerts/?limit=5')
+        ]);
+
+        if (tRes.status === 'fulfilled' && Array.isArray(tRes.value.data)) {
+          setTelemetry(tRes.value.data);
+        }
+        if (vRes.status === 'fulfilled' && Array.isArray(vRes.value.data)) {
+          setVision(vRes.value.data);
+        }
+        if (histRes.status === 'fulfilled' && Array.isArray(histRes.value.data)) {
+          setHistory([...histRes.value.data].reverse());
+        }
+        if (alertsRes.status === 'fulfilled' && Array.isArray(alertsRes.value.data)) {
+          setAlerts(alertsRes.value.data.slice(0, 5));
+        }
       } catch (err) {
         console.error("Failed to fetch dashboard data", err);
       }

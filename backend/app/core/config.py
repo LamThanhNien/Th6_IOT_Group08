@@ -4,7 +4,7 @@ class Settings(BaseSettings):
     APP_ENV: str = "development"
     DATABASE_URL: str
     JWT_SECRET: str
-    ACCESS_TOKEN_EXPIRE_MINUTES: int = 60
+    ACCESS_TOKEN_EXPIRE_MINUTES: int = 10080  # 7 days
     
     MQTT_HOST: str = "localhost"
     MQTT_PORT: int = 1883

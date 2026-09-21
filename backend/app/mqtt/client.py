@@ -20,10 +20,12 @@ class MQTTClient:
     def on_connect(self, client, userdata, flags, rc):
         if rc == 0:
             logger.info("Connected to MQTT Broker!")
-            # Subscribe to topics
             self.client.subscribe("rooms/+/devices/+/telemetry")
             self.client.subscribe("rooms/+/vision")
             self.client.subscribe("rooms/+/devices/+/status")
+            self.client.subscribe("device/+/telemetry")
+            self.client.subscribe("device/+/command/ack")
+            self.client.subscribe("device/+/status")
         else:
             logger.error(f"Failed to connect to MQTT Broker, return code {rc}")
 
